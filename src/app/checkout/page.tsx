@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store";
 import { clearCart } from "@/store/cartSlice";
@@ -23,8 +23,13 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      router.push("/");
+    }
+  }, [cartItems, router]);
+
   if (cartItems.length === 0) {
-    if (typeof window !== "undefined") router.push("/cart");
     return null;
   }
 
@@ -43,13 +48,6 @@ export default function CheckoutPage() {
           customerName: formData.customerName,
           customerEmail: formData.customerEmail,
           phoneNumber: formData.phoneNumber,
-          // We are sending address details as part of `items` metadata or strictly following schema if we didn't update it?
-          // The backend I wrote extracts `customerName`, `customerEmail`, `items`, `total`.
-          // I will include address in `items` or just log it for now if backend doesn't save it to a column.
-          // Wait, I updated backend to accept `items`. I can store address in a special item or just rely on backend ignoring extra fields if I send them?
-          // Actually, in `server/src/routes/orders.ts`, I defined `req.body` but `prisma.order.create` only takes schema fields.
-          // I will bundle address into the first item's config or a separate metadata object in items array if strictly adhering to schema.
-          // OR, safely, I'll just append an "Address Info" item to the items array.
           items: [...cartItems, { isAddress: true, ...formData }],
           total,
           address: formData.address,
@@ -74,117 +72,216 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+    <div className="min-h-screen bg-gray-50/50 py-12">
+      <div className="max-w-6xl mx-auto px-4 lg:px-8">
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-10 tracking-tight">
+          Checkout
+        </h1>
 
-      <div className="bg-white p-8 rounded-lg shadow border">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <input
-                type="text"
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border"
-                value={formData.customerName}
-                onChange={(e) =>
-                  setFormData({ ...formData, customerName: e.target.value })
-                }
-              />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+          {/* Left Column: Form */}
+          <div className="lg:col-span-7 space-y-8">
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-sm">
+                  1
+                </span>
+                Contact Information
+              </h2>
+              <form
+                id="checkout-form"
+                onSubmit={handleSubmit}
+                className="space-y-6"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-black focus:ring-black transition-colors p-3 bg-gray-50/50 focus:bg-white"
+                      value={formData.customerEmail}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          customerEmail: e.target.value,
+                        })
+                      }
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-black focus:ring-black transition-colors p-3 bg-gray-50/50 focus:bg-white"
+                      value={formData.phoneNumber}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          phoneNumber: e.target.value,
+                        })
+                      }
+                      placeholder="+44 7000 000000"
+                    />
+                  </div>
+                </div>
+              </form>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Email Address
-              </label>
-              <input
-                type="email"
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border"
-                value={formData.customerEmail}
-                onChange={(e) =>
-                  setFormData({ ...formData, customerEmail: e.target.value })
-                }
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border"
-                value={formData.phoneNumber}
-                onChange={(e) =>
-                  setFormData({ ...formData, phoneNumber: e.target.value })
-                }
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Address
-              </label>
-              <input
-                type="text"
-                required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border"
-                value={formData.address}
-                onChange={(e) =>
-                  setFormData({ ...formData, address: e.target.value })
-                }
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  City
-                </label>
-                <input
-                  type="text"
-                  required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border"
-                  value={formData.city}
-                  onChange={(e) =>
-                    setFormData({ ...formData, city: e.target.value })
-                  }
-                />
+
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <span className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-sm">
+                  2
+                </span>
+                Shipping Address
+              </h2>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    form="checkout-form"
+                    className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-black focus:ring-black transition-colors p-3 bg-gray-50/50 focus:bg-white"
+                    value={formData.customerName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, customerName: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    Address
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    form="checkout-form"
+                    className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-black focus:ring-black transition-colors p-3 bg-gray-50/50 focus:bg-white"
+                    value={formData.address}
+                    onChange={(e) =>
+                      setFormData({ ...formData, address: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      form="checkout-form"
+                      className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-black focus:ring-black transition-colors p-3 bg-gray-50/50 focus:bg-white"
+                      value={formData.city}
+                      onChange={(e) =>
+                        setFormData({ ...formData, city: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                      Postal Code
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      form="checkout-form"
+                      className="block w-full rounded-xl border-gray-200 shadow-sm focus:border-black focus:ring-black transition-colors p-3 bg-gray-50/50 focus:bg-white"
+                      value={formData.postalCode}
+                      onChange={(e) =>
+                        setFormData({ ...formData, postalCode: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Postal Code
-                </label>
-                <input
-                  type="text"
-                  required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border"
-                  value={formData.postalCode}
-                  onChange={(e) =>
-                    setFormData({ ...formData, postalCode: e.target.value })
-                  }
-                />
-              </div>
+            </div>
+
+            <div className="pt-4">
+              {error && (
+                <p className="text-red-500 mb-4 bg-red-50 p-4 rounded-xl border border-red-100 text-sm font-medium">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                form="checkout-form"
+                disabled={loading}
+                className="w-full bg-primary text-white py-5 rounded-2xl font-bold text-lg hover:bg-primary/90 transition-all shadow-lg shadow-gray-900/10 disabled:opacity-50 disabled:transform-none"
+              >
+                {loading ? "Processing Order..." : `Pay £${total.toFixed(2)}`}
+              </button>
+              <p className="text-center text-xs text-gray-400 mt-4 flex items-center justify-center gap-2">
+                🔒 Secure SSL Encryption
+              </p>
             </div>
           </div>
 
-          <div className="border-t pt-6">
-            <div className="flex justify-between font-bold text-xl mb-6">
-              <span>Total to Pay</span>
-              <span>£{total}</span>
+          {/* Right Column: Order Summary */}
+          <div className="lg:col-span-5">
+            <div className="bg-gray-50 p-8 rounded-3xl shadow-none border border-black/5 h-fit sticky top-8">
+              <h2 className="text-lg font-bold text-gray-900 mb-6">
+                Order Summary
+              </h2>
+              <div className="space-y-4 mb-8 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                {cartItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex gap-4 p-4 bg-white rounded-xl border border-gray-200 shadow-sm"
+                  >
+                    <div className="w-16 h-8 bg-yellow-400 rounded flex items-center justify-center font-bold text-[10px] border border-black/10 shrink-0 uppercase shadow-inner">
+                      {item.reg}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between items-start mb-1">
+                        <h4 className="font-bold text-sm text-gray-900">
+                          {item.reg}
+                        </h4>
+                        <p className="font-bold text-sm text-gray-900">
+                          £{item.price.toFixed(2)}
+                        </p>
+                      </div>
+                      <p className="text-xs text-gray-500 capitalize mb-2">
+                        {item.config.style} Plate
+                      </p>
+                      <div className="flex gap-2 text-[10px] text-gray-400 font-medium bg-gray-50 p-2 rounded-lg">
+                        <span>Front: {item.config.sizeFront}</span>
+                        <span className="w-px h-3 bg-gray-200" />
+                        <span>Rear: {item.config.sizeRear}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t border-dashed border-gray-200 pt-6 space-y-3">
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>Subtotal</span>
+                  <span className="font-medium">£{total.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>Shipping</span>
+                  <span className="text-green-600 font-medium">Free</span>
+                </div>
+                <div className="flex justify-between font-extrabold text-2xl pt-4 border-t border-gray-900/10 mt-4 text-gray-900">
+                  <span>Total</span>
+                  <span>£{total.toFixed(2)}</span>
+                </div>
+              </div>
             </div>
-
-            {error && <p className="text-red-500 mb-4">{error}</p>}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-green-600 text-white py-4 rounded-lg font-bold hover:bg-green-700 transition disabled:opacity-50"
-            >
-              {loading ? "Processing..." : "Place Order"}
-            </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

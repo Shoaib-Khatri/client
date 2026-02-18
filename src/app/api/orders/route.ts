@@ -107,13 +107,27 @@ export async function POST(req: Request) {
                 <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px;">Items</h3>
                 <ul style="list-style: none; padding: 0;">
                     ${orderItems
-                      .map(
-                        (item: any) => `
+                      .map((item: any) => {
+                        const details = item.config
+                          ? `
+                            <br/>
+                            <span style="color: #666; font-size: 12px;">
+                              ${item.config.plateType ? `Type: ${item.config.plateType}` : ""} 
+                              ${item.config.style ? `| Style: ${item.config.style}` : ""}
+                              ${item.config.size ? `| Size: ${item.config.size}` : ""}
+                              ${item.config.badge ? `| Badge: ${item.config.badge}` : ""}
+                              ${item.config.border ? `| Border: ${item.config.border}` : ""}
+                            </span>
+                           `
+                          : "";
+
+                        return `
                         <li style="padding: 10px 0; border-bottom: 1px solid #f9f9f9;">
-                            <strong>${item.reg || "Car"}</strong> - £${item.price}
+                            <strong>${item.reg || item.make + " " + item.model || "Item"}</strong> - £${item.price}
+                            ${details}
                         </li>
-                    `,
-                      )
+                    `;
+                      })
                       .join("")}
                 </ul>
 
