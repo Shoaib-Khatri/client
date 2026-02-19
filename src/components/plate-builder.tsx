@@ -426,7 +426,8 @@ export default function PlateBuilder() {
                 className="group-hover:translate-x-1 transition-transform"
               />
             </button>
-            <button
+            {/* Todo   */}
+            {/* <button
               onClick={() => {
                 addToCart();
                 setTimeout(() => router.push("/checkout"), 100);
@@ -434,7 +435,7 @@ export default function PlateBuilder() {
               className="w-full mt-3 bg-black hover:bg-gray-900 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"
             >
               Buy Now <ArrowRight size={20} />
-            </button>
+            </button> */}
             {error && (
               <p className="text-red-400 text-center mt-3 text-sm font-medium">
                 {error}
@@ -502,4 +503,3 @@ function OptionButton({
     </div>
   );
 }
-

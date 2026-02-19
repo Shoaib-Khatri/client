@@ -107,12 +107,13 @@ export default function CartDrawer({
                 </button>
               </SheetClose>
               <SheetClose asChild>
-                <button
+                {/* Todo */}
+                {/* <button
                   onClick={() => router.push("/cart")}
                   className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900 py-3 rounded-lg font-bold transition-colors text-sm"
                 >
                   View Full Basket
-                </button>
+                </button> */}
               </SheetClose>
             </div>
           </SheetFooter>

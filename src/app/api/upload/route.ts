@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
     // Validate file type
     const allowedTypes = [
       "image/jpeg",
+      "image/jpg",
       "image/png",
       "image/webp",
       "image/gif",
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "Invalid file type. Only JPEG, PNG, WebP, GIF, and SVG are allowed.",
+            "Invalid file type. Only JPEG, JPG, PNG, WebP, GIF, and SVG are allowed.",
         },
         { status: 400 },
       );
@@ -41,7 +42,8 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(bytes);
 
     // Create uploads directory if it doesn't exist
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
+    // const uploadsDir = path.join(process.cwd(), "public", "uploads");
+    const uploadsDir = path.join(process.cwd(), "/tmp", "uploads");
     await mkdir(uploadsDir, { recursive: true });
 
     // Generate unique filename
