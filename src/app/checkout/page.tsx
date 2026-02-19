@@ -61,8 +61,7 @@ export default function CheckoutPage() {
       }
 
       dispatch(clearCart());
-      alert("Order placed successfully!");
-      router.push("/");
+      router.push("/checkout/success");
     } catch (err) {
       console.error("Error placing order:", err);
       setError("Failed to place order. Please try again.");

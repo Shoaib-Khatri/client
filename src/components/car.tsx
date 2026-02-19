@@ -55,7 +55,7 @@ const CarCards = () => {
             {cars.map((car) => (
               <div
                 key={car._id}
-                className="group bg-white rounded-[2.5rem] p-6 border border-slate-200 flex flex-col w-full transition-colors hover:border-blue-200"
+                className="group bg-slate-50 rounded-[2.5rem] p-6 border border-slate-200 flex flex-col w-full transition-colors hover:border-blue-200"
               >
                 {/* Image Container */}
                 <div className="relative w-full h-64 bg-slate-50 rounded-[2rem] overflow-hidden flex items-center justify-center mb-6">

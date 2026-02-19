@@ -239,7 +239,6 @@ export default function AdminDashboard() {
     { id: "overview", label: "Overview" },
     { id: "orders", label: "Orders" },
     { id: "cars", label: "Cars" },
-    { id: "plates", label: "Plates" },
   ];
 
   return (
@@ -660,12 +659,13 @@ export default function AdminDashboard() {
             </div>
 
             <div className="p-6 bg-gray-50 border-t flex justify-end gap-3 rounded-b-3xl">
-              <button
+              {/* Todo */}
+              {/* <button
                 onClick={() => printInvoice(selectedOrder)}
                 className="bg-gray-900 text-white px-6 py-3 rounded-xl hover:bg-black transition-all shadow-lg shadow-gray-900/20 flex items-center gap-2 font-bold"
               >
                 Downloads Invoice
-              </button>
+              </button> */}
               <button
                 onClick={() => setSelectedOrder(null)}
                 className="bg-white border border-gray-200 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-50 transition-colors font-bold"

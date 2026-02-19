@@ -8,28 +8,28 @@ const NamePlateCards = () => {
       id: 1,
       name: "Standard Front Plate",
       style: "Classic White Acrylic",
-      img: "/name1.png",
+      img: "/plate1.png",
       price: "£15.99",
     },
     {
       id: 2,
       name: "Standard Rear Plate",
       style: "Classic Yellow Acrylic",
-      img: "/name2.png",
+      img: "/plate2.png",
       price: "£15.99",
     },
     {
       id: 3,
       name: "4D Laser Cut",
       style: "Premium Gloss Finish",
-      img: "/name3.png",
+      img: "/plate3.png",
       price: "£45.00",
     },
     {
       id: 4,
       name: "Short Plate",
       style: "Custom Width Design",
-      img: "/name4.png",
+      img: "/plate4.png",
       price: "£25.00",
     },
   ];
@@ -62,7 +62,7 @@ const NamePlateCards = () => {
               className="group bg-slate-50 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-200 hover:-translate-y-2"
             >
               {/* Image */}
-              <div className="relative w-full h-32 mb-6 flex items-center justify-center bg-white rounded-lg border border-slate-100 shadow-inner p-4 overflow-hidden">
+              <div className="relative w-full h-32 mb-6 flex items-center justify-center overflow-hidden">
                 <Image
                   src={plate.img}
                   alt={plate.name}
