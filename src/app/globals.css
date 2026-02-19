@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
+@plugin "tailwind-scrollbar-hide";
 
 
 
@@ -126,4 +127,57 @@
   body {
     @apply bg-background text-foreground overflow-x-hidden;
   }
+}
+
+/* Hero Animations */
+@keyframes hero-car-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(80px) scale(0.95);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes hero-fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-text-reveal {
+  0% {
+    opacity: 0;
+    letter-spacing: 0.2em;
+  }
+
+  100% {
+    opacity: 1;
+    letter-spacing: -0.05em;
+  }
+}
+
+.animate-hero-car {
+  animation: hero-car-rise 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+.animate-hero-tagline {
+  animation: hero-fade-in-up 0.8s ease-out 0.8s both;
+}
+
+.animate-hero-subtitle {
+  animation: hero-fade-in-up 0.8s ease-out 1.1s both;
+}
+
+.animate-hero-backdrop {
+  animation: hero-text-reveal 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0s both;
 }
